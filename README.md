@@ -40,6 +40,92 @@ The main advatage of using MVVM, there is no two way dependency between ViewMode
 * **Service Builder Module** : We map all service classes used in the application.
 * **Broadcast Builder Module** : We map all broadcast receivers used in the application.
 * **Worker Module** : We map all worker classes used in the application.
+* 
+## view has following packages
+
+* **base**: Base classes for the Activities, Fragments and Fragment Dialogs
+   1. ```BaseActivity<Binding extends ViewDataBinding, VM extends BaseViewModel>``` : Base for all the activities in the application. It requires ```Binding which is a Data Binding layout of the activity``` and ```VM which is a ViewModel of the activity```. It holds below common attributes and dependecies
+      * NetworkUtils : Provides the information that, mobile (or) tab connected to the interent or not
+      * AnalyticsTracker : Analytics instance to send the analytics
+      * ProgressDialog : To display common dialog through out the application
+      * ViewModel : Activities ViewModel
+      * Logout Dialog : To display common dialog
+      * Data Binding : binding UI components in layouts to data sources in app using a declarative format rather than programmatically
+      * KeyPad Utils : To get the information that, whether keypad is open or not
+      
+  2. ```BaseFragment<VM extends BaseViewModel,Binding extends ViewDataBinding>``` : Base for all the fragment in the application. It requires ```Binding which is a Data Binding layout of the activity``` and ```VM which is a ViewModel of the activity```. It holds below common attributes and dependecies
+      * NetworkUtils : Provides the information that, mobile (or) tab connected to the interent or not
+      * AnalyticsTracker : Analytics instance to send the analytics
+      * ProgressDialog : To display common dialog through out the application
+      * ViewModel : Activities ViewModel
+      * Logout Dialog : To display common dialog
+      * Data Binding : binding UI components in layouts to data sources in app using a declarative format rather than programmatically
+      * KeyPad Utils : To get the information that, whether keypad is open or not
+      
+  3. ```BaseDialogFragment<VM extends BaseViewModel,Binding extends ViewDataBinding>``` : Base for all the fragment dialogs in the application. It requires ```Binding which is a Data Binding layout of the activity``` and ```VM which is a ViewModel of the activity```. It holds below common attributes and dependecies
+      * NetworkUtils : Provides the information that, mobile (or) tab connected to the interent or not
+      * AnalyticsTracker : Analytics instance to send the analytics
+      * ProgressDialog : To display common dialog through out the application
+      * ViewModel : Activities ViewModel
+      * Logout Dialog : To display common dialog
+      * Data Binding : binding UI components in layouts to data sources in app using a declarative format rather than programmatically
+      * KeyPad Utils : To get the information that, whether keypad is open or not
+      
+  4. ```BaseAdapter<ViewHolder, Item>```: Base for all the adapters used in the application and holds below common attributes and dependecies
+      * listItems : List of items are present in the recycler view ```listItems```
+      * **Add Initial List** : Adding the list. This method should call to add the list.
+      
+         ```
+         public void addInitialData(List<Item> data) {
+
+           if (data == null) {
+               return;
+           }
+
+           listItems.clear();
+           listItems.addAll(new ArrayList<>(data));
+           notifyDataSetChanged();
+         }
+        ```
+       * **Add New List** : This method will be used when recycler view has pagination feature
+      
+        ```
+           public void addNewData(List<Item> newData) {
+              listItems.addAll(new ArrayList<>(newData));
+              notifyDataSetChanged();
+            }
+        ```
+        
+   5. ```BaseViewHolder<Binding extends ViewDataBinding, Item>```: Base for all the ViewHolders used in the application. It requires ```DataBinding and Item``` values. It holds below common attributes and dependecies
+      * ```Binding``` : DataBinding of the item layout 
+      
+   6. ```BaseViewModel```: Base for all the ```viewModles``` used in the application. It works according to life cycle of ``` Activity, Fragment and Dialog Fragments```.
+            It needs ```NLearnDataManager```,```ScheduleProvider```,```NetworkUtils``` as arguments in the constructor. These arguments we get through **Dependency Injection** 
+   
+      * ```refreshToken()``` : Refreshing the token when expired
+      
+         ```
+         @NonNull final String refreshToken = dataManager.getRefreshToken();
+         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
+         
+         refreshTokenRequest.setRefreshToken(refreshToken);
+         dataManager.refreshToken(refreshTokenRequest)
+        ```
+       * ```logoutUserApiCall()``` : Logout api call and when it success, Logouts the user from the application. Uses ``LiveData`` and it gets called by the 
+       ```BaseActivity. viewModel.logoutUser()``` method
+      
+        ```
+           dataManager.logOutUser()
+        ``` 
+       * ```showLoading()``` : Displays loading bar (Uses ``LiveData`` and it gets called by the ```BaseActivity.viewModel.getProgressDialogStatus()``` method)
+       * ```hideLoading()``` : Displays loading bar (Uses ``LiveData`` and it gets called by the ```BaseActivity.viewModel.getProgressDialogStatus()``` method)
+      
+      
+      
+* **appupdate**: 
+* **custom**: 
+* **home**: 
+* **registration** : 
 
 ## Programming Practices Followed
 * **[Android Architectural Components from Google (JetPack)](https://developer.android.com/jetpack)**
